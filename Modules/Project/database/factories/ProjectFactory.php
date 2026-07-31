@@ -2,6 +2,7 @@
 
 namespace Modules\Project\Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Project\Enums\ProjectStatus;
 use Modules\Project\Models\Project;
@@ -19,6 +20,7 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => User::factory(),
             'name' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
             'status' => $this->faker->randomElement(ProjectStatus::cases()),
