@@ -36,6 +36,16 @@ class ProjectController extends Controller
     }
 
     /**
+     * Show the specified resource.
+     */
+    public function show(Request $request, int $id)
+    {
+        $project = $this->findOwnedOrFail($request, $id);
+
+        return new ProjectResource($project);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateProjectRequest $request, int $id)

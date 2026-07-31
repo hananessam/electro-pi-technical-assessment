@@ -13,6 +13,11 @@ class ProjectRepository implements ProjectInterface
         return Project::where('user_id', $userId)->get();
     }
 
+    public function find(int $id): ?Project
+    {
+        return Project::find($id);
+    }
+
     public function create(array $data): Project
     {
         return Project::create($data);

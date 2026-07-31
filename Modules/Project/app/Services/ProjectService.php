@@ -15,6 +15,11 @@ class ProjectService
         return $this->projectRepository->allForUser($userId);
     }
 
+    public function find(int $id): ?Project
+    {
+        return $this->projectRepository->find($id);
+    }
+
     /**
      * @param  array{name: string, description?: string, status?: string}  $data
      */

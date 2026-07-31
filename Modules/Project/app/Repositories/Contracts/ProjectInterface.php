@@ -9,6 +9,8 @@ interface ProjectInterface
 {
     public function allForUser(int $userId): Collection;
 
+    public function find(int $id): ?Project;
+
     /**
      * @param  array{name: string, description?: string, status?: string}  $data
      */
