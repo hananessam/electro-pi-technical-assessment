@@ -25,4 +25,16 @@ class AuthService
             'user' => $user,
         ];
     }
+
+    public function register(array $data): array
+    {
+        $user = $this->authRepository->createUser($data);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return [
+            'access_token' => $token,
+            'user' => $user,
+        ];
+    }
 }

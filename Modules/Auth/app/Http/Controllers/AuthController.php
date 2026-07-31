@@ -4,6 +4,7 @@ namespace Modules\Auth\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Modules\Auth\Http\Requests\LoginRequest;
+use Modules\Auth\Http\Requests\RegisterRequest;
 use Modules\Auth\Services\AuthService;
 use Modules\Auth\Transformers\UserResource;
 
@@ -25,5 +26,15 @@ class AuthController extends Controller
             'access_token' => $authData['access_token'],
             'user' => new UserResource($authData['user']),
         ]);
+    }
+
+    public function register(RegisterRequest $request)
+    {
+        $authData = $this->authService->register($request->validated());
+
+        return response()->json([
+            'access_token' => $authData['access_token'],
+            'user' => new UserResource($authData['user']),
+        ], 201);
     }
 }
