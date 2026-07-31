@@ -32,6 +32,7 @@ class ProjectServiceProvider extends ModuleServiceProvider
     protected array $providers = [
         EventServiceProvider::class,
         RouteServiceProvider::class,
+        RepositoryServiceProvider::class,
     ];
 
     /**
