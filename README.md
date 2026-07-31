@@ -2,7 +2,7 @@
 
 # Electro PI Technical Assessment
 
-A modular Laravel 13 API application built with [nwidart/laravel-modules](https://docs.laravelmodules.com/). Currently includes an `Auth` module exposing registration, login, and logout endpoints (see [openapi.yaml](openapi.yaml) for full API documentation).
+A modular Laravel 13 API application built with [nwidart/laravel-modules](https://docs.laravelmodules.com/). Currently includes an `Auth` module exposing registration, login, and logout endpoints, and a `Project` module exposing CRUD endpoints for managing projects (see [openapi.yaml](openapi.yaml) for full API documentation).
 
 ## Requirements
 
@@ -81,6 +81,7 @@ This project uses [nwidart/laravel-modules](https://docs.laravelmodules.com/) to
 | Module | Description |
 |--------|-------------|
 | `Auth` | User registration, login, and logout via Laravel Sanctum |
+| `Project` | CRUD management of projects (authenticated via Laravel Sanctum) |
 
 ## API Documentation
 
