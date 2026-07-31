@@ -35,4 +35,9 @@ class ProjectService
     {
         return $this->projectRepository->update($project, $data);
     }
+
+    public function delete(Project $project): void
+    {
+        $this->projectRepository->delete($project);
+    }
 }

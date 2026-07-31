@@ -29,4 +29,9 @@ class ProjectRepository implements ProjectInterface
 
         return $project;
     }
+
+    public function delete(Project $project): void
+    {
+        $project->delete();
+    }
 }

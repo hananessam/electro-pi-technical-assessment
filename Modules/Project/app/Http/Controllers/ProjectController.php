@@ -58,6 +58,18 @@ class ProjectController extends Controller
     }
 
     /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request, int $id)
+    {
+        $project = $this->findOwnedOrFail($request, $id);
+
+        $this->projectService->delete($project);
+
+        return response()->json(['message' => 'Project deleted successfully']);
+    }
+
+    /**
      * Find a project by id, aborting with 404 if missing or 403 if not owned by the authenticated user.
      */
     private function findOwnedOrFail(Request $request, int $id): Project

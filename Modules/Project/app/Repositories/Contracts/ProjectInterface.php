@@ -20,4 +20,6 @@ interface ProjectInterface
      * @param  array{name?: string, description?: string, status?: string}  $data
      */
     public function update(Project $project, array $data): Project;
+
+    public function delete(Project $project): void;
 }
