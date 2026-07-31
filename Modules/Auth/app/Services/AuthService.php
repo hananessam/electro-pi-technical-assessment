@@ -2,6 +2,7 @@
 
 namespace Modules\Auth\Services;
 
+use App\Models\User;
 use Modules\Auth\Repositories\Contracts\AuthInterface;
 
 class AuthService
@@ -36,5 +37,10 @@ class AuthService
             'access_token' => $token,
             'user' => $user,
         ];
+    }
+
+    public function logout(User $user): void
+    {
+        $user->currentAccessToken()->delete();
     }
 }

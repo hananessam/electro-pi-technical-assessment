@@ -3,6 +3,7 @@
 namespace Modules\Auth\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Http\Requests\RegisterRequest;
 use Modules\Auth\Services\AuthService;
@@ -36,5 +37,12 @@ class AuthController extends Controller
             'access_token' => $authData['access_token'],
             'user' => new UserResource($authData['user']),
         ], 201);
+    }
+
+    public function logout(Request $request)
+    {
+        $this->authService->logout($request->user());
+
+        return response()->json(['message' => 'Logged out successfully']);
     }
 }
