@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Project\Database\Factories\ProjectFactory;
 use Modules\Project\Enums\ProjectStatus;
+use Modules\Task\Models\Task;
 
 class Project extends Model
 {
@@ -44,5 +45,10 @@ class Project extends Model
     protected static function newFactory(): ProjectFactory
     {
         return ProjectFactory::new();
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }
