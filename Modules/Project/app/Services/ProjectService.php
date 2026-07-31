@@ -3,6 +3,8 @@
 namespace Modules\Project\Services;
 
 use Illuminate\Database\Eloquent\Collection;
+use Modules\Project\DataTransferObjects\ProjectDTO;
+use Modules\Project\DataTransferObjects\UpdateProjectDTO;
 use Modules\Project\Models\Project;
 use Modules\Project\Repositories\Contracts\ProjectInterface;
 
@@ -20,18 +22,12 @@ class ProjectService
         return $this->projectRepository->find($id);
     }
 
-    /**
-     * @param  array{name: string, description?: string, status?: string}  $data
-     */
-    public function create(array $data): Project
+    public function create(ProjectDTO $data): Project
     {
         return $this->projectRepository->create($data);
     }
 
-    /**
-     * @param  array{name?: string, description?: string, status?: string}  $data
-     */
-    public function update(Project $project, array $data): Project
+    public function update(Project $project, UpdateProjectDTO $data): Project
     {
         return $this->projectRepository->update($project, $data);
     }

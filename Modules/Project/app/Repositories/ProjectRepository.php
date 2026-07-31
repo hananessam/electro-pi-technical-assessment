@@ -3,6 +3,8 @@
 namespace Modules\Project\Repositories;
 
 use Illuminate\Database\Eloquent\Collection;
+use Modules\Project\DataTransferObjects\ProjectDTO;
+use Modules\Project\DataTransferObjects\UpdateProjectDTO;
 use Modules\Project\Models\Project;
 use Modules\Project\Repositories\Contracts\ProjectInterface;
 
@@ -18,14 +20,14 @@ class ProjectRepository implements ProjectInterface
         return Project::find($id);
     }
 
-    public function create(array $data): Project
+    public function create(ProjectDTO $data): Project
     {
-        return Project::create($data);
+        return Project::create($data->toArray());
     }
 
-    public function update(Project $project, array $data): Project
+    public function update(Project $project, UpdateProjectDTO $data): Project
     {
-        $project->update($data);
+        $project->update($data->toArray());
 
         return $project;
     }

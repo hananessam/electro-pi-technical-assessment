@@ -3,6 +3,8 @@
 namespace Modules\Project\Repositories\Contracts;
 
 use Illuminate\Database\Eloquent\Collection;
+use Modules\Project\DataTransferObjects\ProjectDTO;
+use Modules\Project\DataTransferObjects\UpdateProjectDTO;
 use Modules\Project\Models\Project;
 
 interface ProjectInterface
@@ -11,15 +13,9 @@ interface ProjectInterface
 
     public function find(int $id): ?Project;
 
-    /**
-     * @param  array{name: string, description?: string, status?: string}  $data
-     */
-    public function create(array $data): Project;
+    public function create(ProjectDTO $data): Project;
 
-    /**
-     * @param  array{name?: string, description?: string, status?: string}  $data
-     */
-    public function update(Project $project, array $data): Project;
+    public function update(Project $project, UpdateProjectDTO $data): Project;
 
     public function delete(Project $project): void;
 }

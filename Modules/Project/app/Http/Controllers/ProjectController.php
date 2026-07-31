@@ -4,6 +4,8 @@ namespace Modules\Project\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Project\DataTransferObjects\ProjectDTO;
+use Modules\Project\DataTransferObjects\UpdateProjectDTO;
 use Modules\Project\Http\Requests\StoreProjectRequest;
 use Modules\Project\Http\Requests\UpdateProjectRequest;
 use Modules\Project\Models\Project;
@@ -27,10 +29,7 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        $project = $this->projectService->create([
-            ...$request->validated(),
-            'user_id' => $request->user()->id,
-        ]);
+        $project = $this->projectService->create(ProjectDTO::fromRequest($request, $request->user()->id));
 
         return (new ProjectResource($project))->response()->setStatusCode(201);
     }
@@ -52,7 +51,7 @@ class ProjectController extends Controller
     {
         $project = $this->findOwnedOrFail($request, $id);
 
-        $project = $this->projectService->update($project, $request->validated());
+        $project = $this->projectService->update($project, UpdateProjectDTO::fromRequest($request));
 
         return new ProjectResource($project);
     }
