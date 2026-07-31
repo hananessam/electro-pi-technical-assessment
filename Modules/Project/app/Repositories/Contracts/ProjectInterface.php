@@ -13,4 +13,9 @@ interface ProjectInterface
      * @param  array{name: string, description?: string, status?: string}  $data
      */
     public function create(array $data): Project;
+
+    /**
+     * @param  array{name?: string, description?: string, status?: string}  $data
+     */
+    public function update(Project $project, array $data): Project;
 }

@@ -17,4 +17,11 @@ class ProjectRepository implements ProjectInterface
     {
         return Project::create($data);
     }
+
+    public function update(Project $project, array $data): Project
+    {
+        $project->update($data);
+
+        return $project;
+    }
 }

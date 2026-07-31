@@ -5,6 +5,8 @@ namespace Modules\Project\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Project\Http\Requests\StoreProjectRequest;
+use Modules\Project\Http\Requests\UpdateProjectRequest;
+use Modules\Project\Models\Project;
 use Modules\Project\Services\ProjectService;
 use Modules\Project\Transformers\ProjectResource;
 
@@ -31,5 +33,31 @@ class ProjectController extends Controller
         ]);
 
         return (new ProjectResource($project))->response()->setStatusCode(201);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateProjectRequest $request, int $id)
+    {
+        $project = $this->findOwnedOrFail($request, $id);
+
+        $project = $this->projectService->update($project, $request->validated());
+
+        return new ProjectResource($project);
+    }
+
+    /**
+     * Find a project by id, aborting with 404 if missing or 403 if not owned by the authenticated user.
+     */
+    private function findOwnedOrFail(Request $request, int $id): Project
+    {
+        $project = $this->projectService->find($id);
+
+        abort_if(! $project, 404);
+
+        abort_if($project->user_id !== $request->user()->id, 403);
+
+        return $project;
     }
 }

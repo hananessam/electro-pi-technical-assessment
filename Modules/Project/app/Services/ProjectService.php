@@ -22,4 +22,12 @@ class ProjectService
     {
         return $this->projectRepository->create($data);
     }
+
+    /**
+     * @param  array{name?: string, description?: string, status?: string}  $data
+     */
+    public function update(Project $project, array $data): Project
+    {
+        return $this->projectRepository->update($project, $data);
+    }
 }
