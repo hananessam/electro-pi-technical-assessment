@@ -5,6 +5,7 @@ namespace Modules\Task\Repositories;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Task\DataTransferObjects\TaskDTO;
+use Modules\Task\DataTransferObjects\UpdateTaskDTO;
 use Modules\Task\Models\Task;
 use Modules\Task\Repositories\Contracts\TaskInterface;
 
@@ -17,8 +18,20 @@ class TaskRepository implements TaskInterface
         })->get();
     }
 
+    public function find(int $id): ?Task
+    {
+        return Task::find($id);
+    }
+
     public function create(TaskDTO $data): Task
     {
         return Task::create($data->toArray());
+    }
+
+    public function update(Task $task, UpdateTaskDTO $data): Task
+    {
+        $task->update($data->toArray());
+
+        return $task;
     }
 }
