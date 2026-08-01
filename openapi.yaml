@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Electro PI Technical Assessment API
-  description: API documentation for the Auth and Project modules.
+  description: API documentation for the Auth, Project, and Task modules.
   version: 1.0.0
 servers:
   - url: http://localhost:8000/api/v1
@@ -10,6 +10,8 @@ tags:
     description: Authentication endpoints
   - name: Project
     description: Project management endpoints
+  - name: Task
+    description: Task management endpoints
 paths:
   /auth/login:
     post:
@@ -254,6 +256,165 @@ paths:
         '404':
           description: Project not found
 
+  /tasks:
+    get:
+      tags: [Task]
+      summary: List tasks belonging to the authenticated user's projects
+      operationId: taskIndex
+      security:
+        - sanctumToken: []
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+    post:
+      tags: [Task]
+      summary: Create a new task on one of the authenticated user's projects
+      operationId: taskStore
+      security:
+        - sanctumToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequest'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '403':
+          description: Project belongs to another user
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /tasks/{task}:
+    get:
+      tags: [Task]
+      summary: Show a single task
+      operationId: taskShow
+      security:
+        - sanctumToken: []
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '403':
+          description: Task's project belongs to another user
+        '404':
+          description: Task not found
+
+    put:
+      tags: [Task]
+      summary: Update a task
+      operationId: taskUpdate
+      security:
+        - sanctumToken: []
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '403':
+          description: Task's project belongs to another user
+        '404':
+          description: Task not found
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+    delete:
+      tags: [Task]
+      summary: Delete a task
+      operationId: taskDestroy
+      security:
+        - sanctumToken: []
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Task deleted successfully
+        '401':
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '403':
+          description: Task's project belongs to another user
+        '404':
+          description: Task not found
+
 components:
   parameters:
     ProjectId:
@@ -263,6 +424,14 @@ components:
       schema:
         type: integer
       description: The project ID
+
+    TaskId:
+      name: task
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: The task ID
 
   securitySchemes:
     sanctumToken:
@@ -366,6 +535,93 @@ components:
           type: string
           enum: [active, completed, archived]
           example: active
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        project_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Design the homepage mockup
+        description:
+          type: string
+          nullable: true
+          example: Create high-fidelity mockups for the new homepage
+        status:
+          type: string
+          enum: [todo, in_progress, done]
+          example: todo
+        priority:
+          type: string
+          enum: [low, medium, high]
+          example: medium
+        due_date:
+          type: string
+          format: date
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TaskRequest:
+      type: object
+      required: [project_id, title, status, priority]
+      properties:
+        project_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          maxLength: 255
+          example: Design the homepage mockup
+        description:
+          type: string
+          nullable: true
+          example: Create high-fidelity mockups for the new homepage
+        status:
+          type: string
+          enum: [todo, in_progress, done]
+          example: todo
+        priority:
+          type: string
+          enum: [low, medium, high]
+          example: medium
+        due_date:
+          type: string
+          format: date
+          nullable: true
+
+    UpdateTaskRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          example: Design the homepage mockup
+        description:
+          type: string
+          nullable: true
+          example: Create high-fidelity mockups for the new homepage
+        status:
+          type: string
+          enum: [todo, in_progress, done]
+          example: todo
+        priority:
+          type: string
+          enum: [low, medium, high]
+          example: medium
+        due_date:
+          type: string
+          format: date
+          nullable: true
 
     MessageResponse:
       type: object
