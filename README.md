@@ -133,6 +133,10 @@ Tests run against an in-memory SQLite database (configured in `phpunit.xml`), so
 
     Full request/response shapes for every endpoint are documented in [openapi.yaml](openapi.yaml).
 
+### Postman
+
+Prefer a GUI? Import [postman_collection.json](postman_collection.json) into Postman. Its **Login** request has a test script that automatically saves the response's `access_token` into the collection's `token` variable, and the collection's auth is set to `Bearer {{token}}` — so every other request in the collection is authenticated automatically once you run Login, with no manual copy/paste. Update the `base_url`, `project_id`, and `task_id` collection variables as needed.
+
 ## Modules
 
 This project uses [nwidart/laravel-modules](https://docs.laravelmodules.com/) to organize domain functionality under the `Modules/` directory.
