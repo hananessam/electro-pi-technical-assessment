@@ -16,4 +16,6 @@ interface TaskInterface
     public function create(TaskDTO $data): Task;
 
     public function update(Task $task, UpdateTaskDTO $data): Task;
+
+    public function delete(Task $task): void;
 }

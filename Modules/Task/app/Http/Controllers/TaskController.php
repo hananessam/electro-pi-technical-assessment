@@ -56,6 +56,18 @@ class TaskController extends Controller
     }
 
     /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Request $request, int $id)
+    {
+        $task = $this->findOwnedOrFail($request, $id);
+
+        $this->taskService->delete($task);
+
+        return response()->json(['message' => 'Task deleted successfully']);
+    }
+
+    /**
      * Find a task by id, aborting with 404 if missing or 403 if its project is not owned by the authenticated user.
      */
     private function findOwnedOrFail(Request $request, int $id): Task
