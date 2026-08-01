@@ -4,6 +4,7 @@ namespace Modules\Task\Services;
 
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Task\DataTransferObjects\TaskDTO;
+use Modules\Task\DataTransferObjects\TaskFilters;
 use Modules\Task\DataTransferObjects\UpdateTaskDTO;
 use Modules\Task\Models\Task;
 use Modules\Task\Repositories\Contracts\TaskInterface;
@@ -12,9 +13,9 @@ class TaskService
 {
     public function __construct(private TaskInterface $taskRepository) {}
 
-    public function listForUser(int $userId): Collection
+    public function listForUser(int $userId, TaskFilters $filters): Collection
     {
-        return $this->taskRepository->allByUser($userId);
+        return $this->taskRepository->allByUser($userId, $filters);
     }
 
     public function find(int $id): ?Task

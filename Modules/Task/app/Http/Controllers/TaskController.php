@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Project\Models\Project;
 use Modules\Task\DataTransferObjects\TaskDTO;
+use Modules\Task\DataTransferObjects\TaskFilters;
 use Modules\Task\DataTransferObjects\UpdateTaskDTO;
+use Modules\Task\Http\Requests\IndexTaskRequest;
 use Modules\Task\Http\Requests\StoreTaskRequest;
 use Modules\Task\Http\Requests\UpdateTaskRequest;
 use Modules\Task\Models\Task;
@@ -15,16 +17,14 @@ use Modules\Task\Transformers\TaskResource;
 
 class TaskController extends Controller
 {
-    public function __construct(public TaskService $taskService)
-    {
-    }
+    public function __construct(public TaskService $taskService) {}
 
     /**
      * Display a listing of the authenticated user's tasks.
      */
-    public function index(Request $request)
+    public function index(IndexTaskRequest $request)
     {
-        $tasks = $this->taskService->listForUser($request->user()->id);
+        $tasks = $this->taskService->listForUser($request->user()->id, TaskFilters::fromRequest($request));
 
         return response()->json(TaskResource::collection($tasks));
     }

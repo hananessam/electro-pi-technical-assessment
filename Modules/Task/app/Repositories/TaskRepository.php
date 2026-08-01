@@ -5,17 +5,24 @@ namespace Modules\Task\Repositories;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Modules\Task\DataTransferObjects\TaskDTO;
+use Modules\Task\DataTransferObjects\TaskFilters;
 use Modules\Task\DataTransferObjects\UpdateTaskDTO;
+use Modules\Task\Enums\TaskPriority;
+use Modules\Task\Enums\TaskStatus;
 use Modules\Task\Models\Task;
 use Modules\Task\Repositories\Contracts\TaskInterface;
 
 class TaskRepository implements TaskInterface
 {
-    public function allByUser(int $userId): Collection
+    public function allByUser(int $userId, TaskFilters $filters): Collection
     {
         return Task::whereHas('project', function (Builder $query) use ($userId) {
             $query->where('user_id', $userId);
-        })->get();
+        })
+            ->when($filters->status, fn (Builder $query, TaskStatus $status) => $query->where('status', $status))
+            ->when($filters->priority, fn (Builder $query, TaskPriority $priority) => $query->where('priority', $priority))
+            ->when($filters->title, fn (Builder $query, string $title) => $query->where('title', 'like', '%'.$title.'%'))
+            ->get();
     }
 
     public function find(int $id): ?Task
