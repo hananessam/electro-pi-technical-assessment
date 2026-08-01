@@ -2,8 +2,8 @@
 
 namespace Modules\Project\Repositories;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Modules\Project\DataTransferObjects\ProjectDTO;
 use Modules\Project\DataTransferObjects\ProjectFilters;
 use Modules\Project\DataTransferObjects\UpdateProjectDTO;
@@ -13,9 +13,9 @@ use Modules\Project\Repositories\Contracts\ProjectInterface;
 
 class ProjectRepository implements ProjectInterface
 {
-    public function allForUser(int $userId): Collection
+    public function allForUser(int $userId, int $perPage = 15): LengthAwarePaginator
     {
-        return Project::where('user_id', $userId)->get();
+        return Project::where('user_id', $userId)->paginate($perPage);
     }
 
     public function countForUser(int $userId, ProjectFilters $filters): int

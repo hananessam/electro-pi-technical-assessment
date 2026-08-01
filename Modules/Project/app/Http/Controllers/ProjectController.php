@@ -5,7 +5,9 @@ namespace Modules\Project\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Project\DataTransferObjects\ProjectDTO;
+use Modules\Project\DataTransferObjects\ProjectFilters;
 use Modules\Project\DataTransferObjects\UpdateProjectDTO;
+use Modules\Project\Http\Requests\IndexProjectRequest;
 use Modules\Project\Http\Requests\StoreProjectRequest;
 use Modules\Project\Http\Requests\UpdateProjectRequest;
 use Modules\Project\Models\Project;
@@ -19,9 +21,9 @@ class ProjectController extends Controller
     /**
      * Display a listing of the authenticated user's projects.
      */
-    public function index(Request $request)
+    public function index(IndexProjectRequest $request)
     {
-        return ProjectResource::collection($this->projectService->listForUser($request->user()->id));
+        return ProjectResource::collection($this->projectService->listForUser($request->user()->id, ProjectFilters::fromRequest($request)));
     }
 
     /**

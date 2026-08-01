@@ -16,6 +16,7 @@ class IndexProjectRequest extends FormRequest
         return [
             'status' => ['nullable', new Enum(ProjectStatus::class)],
             'title' => ['nullable', 'string', 'max:255'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }
 

@@ -10,6 +10,7 @@ final readonly class ProjectFilters
     public function __construct(
         public ?ProjectStatus $status = null,
         public ?string $title = null,
+        public ?int $perPage = null,
     ) {}
 
     public static function fromRequest(IndexProjectRequest $request): self
@@ -19,6 +20,7 @@ final readonly class ProjectFilters
         return new self(
             status: isset($validated['status']) ? ProjectStatus::from($validated['status']) : null,
             title: $validated['title'] ?? null,
+            perPage: $validated['per_page'] ?? null,
         );
     }
 }
