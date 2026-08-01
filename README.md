@@ -2,7 +2,7 @@
 
 # Electro PI Technical Assessment
 
-A modular Laravel 13 API application built with [nwidart/laravel-modules](https://docs.laravelmodules.com/). Currently includes an `Auth` module exposing registration, login, and logout endpoints, a `Project` module exposing CRUD endpoints for managing projects, and a `Task` module exposing CRUD endpoints for managing tasks scoped to a project (see [openapi.yaml](openapi.yaml) for full API documentation).
+A modular Laravel 13 API application built with [nwidart/laravel-modules](https://docs.laravelmodules.com/). Currently includes an `Auth` module exposing registration, login, and logout endpoints, a `Project` module exposing CRUD endpoints for managing projects, a `Task` module exposing CRUD endpoints for managing tasks scoped to a project, and a top-level dashboard endpoint that aggregates project and task stats for the authenticated user (see [openapi.yaml](openapi.yaml) for full API documentation).
 
 ## Requirements
 
@@ -83,6 +83,8 @@ This project uses [nwidart/laravel-modules](https://docs.laravelmodules.com/) to
 | `Auth` | User registration, login, and logout via Laravel Sanctum |
 | `Project` | CRUD management of projects (authenticated via Laravel Sanctum) |
 | `Task` | CRUD management of tasks scoped to a project (authenticated via Laravel Sanctum) |
+
+A `GET /api/v1/dashboard` endpoint (defined in the root app, outside the modules) aggregates project and task counts for the authenticated user: total/active projects and total/completed/pending/overdue tasks.
 
 ## API Documentation
 
