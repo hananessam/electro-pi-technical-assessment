@@ -62,6 +62,34 @@ Or serve the application alone:
 php artisan serve
 ```
 
+## Docker
+
+Alternatively, run the app in Docker (a PHP 8.4 container plus MySQL) without installing PHP/Composer locally:
+
+Docker uses its own env file, `.env.docker`, kept separate from your local `.env` so the two setups (native MySQL on `127.0.0.1` vs. the `db` container) never fight over credentials:
+
+1. Create `.env.docker` in the project root:
+
+    ```bash
+    cat > .env.docker <<'EOF'
+    DB_DATABASE=projects_electro_pi_technical_assessment
+    DB_USERNAME=laravel
+    DB_PASSWORD=secret
+    EOF
+    ```
+
+    `DB_USERNAME` must not be `root` — the MySQL image refuses to configure `MYSQL_USER=root`.
+
+2. Build and start the containers, then run migrations and seed the database:
+
+    ```bash
+    docker compose --env-file .env.docker up -d --build
+    docker compose exec app php artisan migrate
+    docker compose exec app php artisan db:seed
+    ```
+
+The app is then available at http://localhost:8000. `docker-compose.yml` reads `.env.docker` (via `--env-file`) to configure the `db` service and to inject `DB_HOST`/`DB_DATABASE`/`DB_USERNAME`/`DB_PASSWORD` into the `app` container's environment — these take precedence over the `.env` file inside the container, which is scaffolded from `.env.example` with a freshly generated `APP_KEY` on first start. Re-run `docker compose --env-file .env.docker up -d --build` after changing code, since the image isn't live-mounted. If you also run MySQL natively on your machine, stop it first or it will collide with the `db` container's port 3306.
+
 ## Running tests
 
 ```bash
