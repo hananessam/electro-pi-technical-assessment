@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Electro PI Technical Assessment API
-  description: API documentation for the Auth, Project, and Task modules.
+  description: API documentation for the Auth, Project, Task, and Dashboard modules.
   version: 1.0.0
 servers:
   - url: http://localhost:8000/api/v1
@@ -12,6 +12,8 @@ tags:
     description: Project management endpoints
   - name: Task
     description: Task management endpoints
+  - name: Dashboard
+    description: Aggregate summary endpoint
 paths:
   /auth/login:
     post:
@@ -442,6 +444,27 @@ paths:
         '404':
           description: Task not found
 
+  /dashboard:
+    get:
+      tags: [Dashboard]
+      summary: Get an aggregate summary of the authenticated user's projects and tasks
+      operationId: dashboardIndex
+      security:
+        - sanctumToken: []
+      responses:
+        '200':
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardSummary'
+        '401':
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
 components:
   parameters:
     ProjectId:
@@ -649,6 +672,28 @@ components:
           type: string
           format: date
           nullable: true
+
+    DashboardSummary:
+      type: object
+      properties:
+        total_projects:
+          type: integer
+          example: 5
+        active_projects:
+          type: integer
+          example: 3
+        total_tasks:
+          type: integer
+          example: 42
+        completed_tasks:
+          type: integer
+          example: 20
+        pending_tasks:
+          type: integer
+          example: 22
+        overdue_tasks:
+          type: integer
+          example: 4
 
     MessageResponse:
       type: object
