@@ -74,6 +74,65 @@ or
 php artisan test --compact
 ```
 
+Tests run against an in-memory SQLite database (configured in `phpunit.xml`), so they never touch your local `.env` database.
+
+## Manual Testing
+
+1. Seed the database with sample data — this creates two users (`test@example.com` and `test2@example.com`, both with password `password`), several projects in every status, and tasks covering done/pending/overdue:
+
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+
+2. Start the app:
+
+    ```bash
+    php artisan serve
+    ```
+
+3. Log in to get a Sanctum token:
+
+    ```bash
+    curl -s -X POST http://localhost:8000/api/v1/auth/login \
+      -H "Content-Type: application/json" \
+      -d '{"email":"test@example.com","password":"password"}'
+    ```
+
+    Copy the `access_token` from the response and export it for the following requests:
+
+    ```bash
+    export TOKEN="paste-the-access_token-here"
+    ```
+
+4. Exercise the endpoints, e.g.:
+
+    ```bash
+    # List projects (paginated)
+    curl -s http://localhost:8000/api/v1/projects \
+      -H "Authorization: Bearer $TOKEN"
+
+    # Filter + paginate projects
+    curl -s "http://localhost:8000/api/v1/projects?status=active&per_page=2" \
+      -H "Authorization: Bearer $TOKEN"
+
+    # Filter tasks by status/priority and search by title
+    curl -s "http://localhost:8000/api/v1/tasks?status=todo&priority=high&title=bug" \
+      -H "Authorization: Bearer $TOKEN"
+
+    # Create a task
+    curl -s -X POST http://localhost:8000/api/v1/tasks \
+      -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+      -d '{"project_id":1,"title":"Fix the header","status":"todo","priority":"high"}'
+
+    # Dashboard summary
+    curl -s http://localhost:8000/api/v1/dashboard \
+      -H "Authorization: Bearer $TOKEN"
+    ```
+
+    Log in as `test2@example.com` (same password) with a separate token to confirm ownership scoping — that user's requests only ever see their own projects/tasks, and touching `test@example.com`'s records returns `403`.
+
+    Full request/response shapes for every endpoint are documented in [openapi.yaml](openapi.yaml).
+
 ## Modules
 
 This project uses [nwidart/laravel-modules](https://docs.laravelmodules.com/) to organize domain functionality under the `Modules/` directory.
