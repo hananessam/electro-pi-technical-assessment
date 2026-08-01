@@ -263,6 +263,27 @@ paths:
       operationId: taskIndex
       security:
         - sanctumToken: []
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [todo, in_progress, done]
+          description: Filter tasks by status
+        - name: priority
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [low, medium, high]
+          description: Filter tasks by priority
+        - name: title
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search tasks by a partial, case-insensitive title match
       responses:
         '200':
           description: List of tasks
@@ -278,6 +299,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
 
     post:
       tags: [Task]
