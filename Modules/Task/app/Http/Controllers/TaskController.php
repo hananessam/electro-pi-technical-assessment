@@ -44,6 +44,16 @@ class TaskController extends Controller
     }
 
     /**
+     * Show the specified resource.
+     */
+    public function show(Request $request, int $id)
+    {
+        $task = $this->findOwnedOrFail($request, $id);
+
+        return new TaskResource($task);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateTaskRequest $request, int $id)
