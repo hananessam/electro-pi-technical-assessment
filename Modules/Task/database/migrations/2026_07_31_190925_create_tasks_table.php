@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('priority', array_column(TaskPriority::cases(), 'value'))->default(TaskPriority::Medium->value);
             $table->enum('status', array_column(TaskStatus::cases(), 'value'))->default(TaskStatus::Todo->value);
             $table->date('due_date')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

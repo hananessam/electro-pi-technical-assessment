@@ -4,6 +4,7 @@ namespace Modules\Task\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Project\Models\Project;
 use Modules\Task\Database\Factories\TaskFactory;
 use Modules\Task\Enums\TaskPriority;
@@ -11,7 +12,7 @@ use Modules\Task\Enums\TaskStatus;
 
 class Task extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
