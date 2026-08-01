@@ -12,6 +12,12 @@ interface TaskInterface
 {
     public function allByUser(int $userId, TaskFilters $filters): Collection;
 
+    public function countByUser(int $userId, TaskFilters $filters): int;
+
+    public function countPendingByUser(int $userId): int;
+
+    public function countOverdueByUser(int $userId): int;
+
     public function find(int $id): ?Task;
 
     public function create(TaskDTO $data): Task;

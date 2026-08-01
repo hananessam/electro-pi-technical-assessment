@@ -16,13 +16,36 @@ class TaskRepository implements TaskInterface
 {
     public function allByUser(int $userId, TaskFilters $filters): Collection
     {
-        return Task::whereHas('project', function (Builder $query) use ($userId) {
-            $query->where('user_id', $userId);
-        })
+        return $this->byUserQuery($userId)
             ->when($filters->status, fn (Builder $query, TaskStatus $status) => $query->where('status', $status))
             ->when($filters->priority, fn (Builder $query, TaskPriority $priority) => $query->where('priority', $priority))
             ->when($filters->title, fn (Builder $query, string $title) => $query->where('title', 'like', '%'.$title.'%'))
             ->get();
+    }
+
+    public function countByUser(int $userId, TaskFilters $filters): int
+    {
+        return $this->byUserQuery($userId)
+            ->when($filters->status, fn (Builder $query, TaskStatus $status) => $query->where('status', $status))
+            ->when($filters->priority, fn (Builder $query, TaskPriority $priority) => $query->where('priority', $priority))
+            ->when($filters->title, fn(Builder $query, string $title) => $query->where('title', 'like', '%' . $title . '%'))
+            ->count();
+    }
+
+    public function countPendingByUser(int $userId): int
+    {
+        return $this->byUserQuery($userId)
+            ->where('status', '!=', TaskStatus::Done)
+            ->count();
+    }
+
+    public function countOverdueByUser(int $userId): int
+    {
+        return $this->byUserQuery($userId)
+            ->where('status', '!=', TaskStatus::Done)
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', now())
+            ->count();
     }
 
     public function find(int $id): ?Task
@@ -45,5 +68,12 @@ class TaskRepository implements TaskInterface
     public function delete(Task $task): void
     {
         $task->delete();
+    }
+
+    private function byUserQuery(int $userId): Builder
+    {
+        return Task::whereHas('project', function (Builder $query) use ($userId) {
+            $query->where('user_id', $userId);
+        });
     }
 }
