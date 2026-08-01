@@ -26,7 +26,7 @@ class TaskController extends Controller
     {
         $tasks = $this->taskService->listForUser($request->user()->id, TaskFilters::fromRequest($request));
 
-        return response()->json(TaskResource::collection($tasks));
+        return TaskResource::collection($tasks);
     }
 
     /**

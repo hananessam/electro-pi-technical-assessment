@@ -18,6 +18,7 @@ class IndexTaskRequest extends FormRequest
             'status' => ['nullable', new Enum(TaskStatus::class)],
             'priority' => ['nullable', new Enum(TaskPriority::class)],
             'title' => ['nullable', 'string', 'max:255'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }
 

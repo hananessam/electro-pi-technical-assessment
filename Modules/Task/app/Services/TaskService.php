@@ -2,7 +2,7 @@
 
 namespace Modules\Task\Services;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Modules\Task\DataTransferObjects\TaskDTO;
 use Modules\Task\DataTransferObjects\TaskFilters;
 use Modules\Task\DataTransferObjects\UpdateTaskDTO;
@@ -13,9 +13,9 @@ class TaskService
 {
     public function __construct(private TaskInterface $taskRepository) {}
 
-    public function listForUser(int $userId, TaskFilters $filters): Collection
+    public function listForUser(int $userId, TaskFilters $filters): LengthAwarePaginator
     {
-        return $this->taskRepository->allByUser($userId, $filters);
+        return $this->taskRepository->allByUser($userId, $filters, $filters->perPage ?? 15);
     }
 
     public function find(int $id): ?Task

@@ -2,7 +2,7 @@
 
 namespace Modules\Task\Repositories\Contracts;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Modules\Task\DataTransferObjects\TaskDTO;
 use Modules\Task\DataTransferObjects\TaskFilters;
 use Modules\Task\DataTransferObjects\UpdateTaskDTO;
@@ -10,7 +10,7 @@ use Modules\Task\Models\Task;
 
 interface TaskInterface
 {
-    public function allByUser(int $userId, TaskFilters $filters): Collection;
+    public function allByUser(int $userId, TaskFilters $filters, int $perPage = 15): LengthAwarePaginator;
 
     public function countByUser(int $userId, TaskFilters $filters): int;
 

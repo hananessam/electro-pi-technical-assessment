@@ -2,8 +2,8 @@
 
 namespace Modules\Task\Repositories;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Modules\Task\DataTransferObjects\TaskDTO;
 use Modules\Task\DataTransferObjects\TaskFilters;
 use Modules\Task\DataTransferObjects\UpdateTaskDTO;
@@ -14,13 +14,13 @@ use Modules\Task\Repositories\Contracts\TaskInterface;
 
 class TaskRepository implements TaskInterface
 {
-    public function allByUser(int $userId, TaskFilters $filters): Collection
+    public function allByUser(int $userId, TaskFilters $filters, int $perPage = 15): LengthAwarePaginator
     {
         return $this->byUserQuery($userId)
             ->when($filters->status, fn (Builder $query, TaskStatus $status) => $query->where('status', $status))
             ->when($filters->priority, fn (Builder $query, TaskPriority $priority) => $query->where('priority', $priority))
             ->when($filters->title, fn (Builder $query, string $title) => $query->where('title', 'like', '%'.$title.'%'))
-            ->get();
+            ->paginate($perPage);
     }
 
     public function countByUser(int $userId, TaskFilters $filters): int

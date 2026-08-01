@@ -16,7 +16,7 @@ test('authenticated user can list only tasks on their own projects', function ()
     $response = $this->withHeader('Authorization', 'Bearer '.$token)
         ->getJson(route('api.task.index'));
 
-    $response->assertOk()->assertJsonCount(3);
+    $response->assertOk()->assertJsonCount(3, 'data')->assertJsonPath('meta.total', 3);
 });
 
 test('authenticated user can filter tasks by status', function () {
@@ -29,7 +29,7 @@ test('authenticated user can filter tasks by status', function () {
     $response = $this->withHeader('Authorization', 'Bearer '.$token)
         ->getJson(route('api.task.index', ['status' => 'done']));
 
-    $response->assertOk()->assertJsonCount(1)->assertJsonPath('0.status', 'done');
+    $response->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.status', 'done');
 });
 
 test('authenticated user can filter tasks by priority', function () {
@@ -42,7 +42,7 @@ test('authenticated user can filter tasks by priority', function () {
     $response = $this->withHeader('Authorization', 'Bearer '.$token)
         ->getJson(route('api.task.index', ['priority' => 'high']));
 
-    $response->assertOk()->assertJsonCount(1)->assertJsonPath('0.priority', 'high');
+    $response->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.priority', 'high');
 });
 
 test('authenticated user can search tasks by title', function () {
@@ -55,7 +55,23 @@ test('authenticated user can search tasks by title', function () {
     $response = $this->withHeader('Authorization', 'Bearer '.$token)
         ->getJson(route('api.task.index', ['title' => 'homepage']));
 
-    $response->assertOk()->assertJsonCount(1)->assertJsonPath('0.title', 'Design the homepage');
+    $response->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('data.0.title', 'Design the homepage');
+});
+
+test('task listing is paginated', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('auth_token')->plainTextToken;
+    $project = Project::factory()->create(['user_id' => $user->id]);
+    Task::factory()->count(5)->create(['project_id' => $project->id]);
+
+    $response = $this->withHeader('Authorization', 'Bearer '.$token)
+        ->getJson(route('api.task.index', ['per_page' => 2]));
+
+    $response->assertOk()
+        ->assertJsonCount(2, 'data')
+        ->assertJsonPath('meta.total', 5)
+        ->assertJsonPath('meta.per_page', 2)
+        ->assertJsonPath('meta.last_page', 3);
 });
 
 test('filtering tasks by an invalid status is rejected', function () {
